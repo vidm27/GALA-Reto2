@@ -72,6 +72,63 @@ const formValidation = reactive({
 })
 
 
+const pointsByProperty = {
+    "countryBirth": function (value: string) {
+        const weight = 1.10
+        return value === "panamá" ? 100 * weight : 200 * weight
+    },
+    "countryResidence": function (value: string) {
+        const weight = 1.10
+        return value === "panamá" ? 100 * weight : 200 * weight
+    },
+    "profession": function (value: string) {
+        const weight = 1.20
+        if (value === "abogado") {
+            return 100 * weight
+        }
+        if (value === "ingeniero") {
+            return 200 * weight
+        }
+        if (value === "medico") {
+            return 300 * weight
+        }
+        if (value === "contador") {
+            return 400 * weight
+        }
+        return 500 * weight
+    },
+    "age": function (value: string) {
+        const weight = 1.10
+        if (value === "lower_25") {
+            return 100 * weight
+        }
+        if (value === "between_25_55") {
+            return 200 * weight
+        }
+        if (value === "bigger_55") {
+            return 300 * weight
+        }
+    },
+    "incomeLevel": function (value: string) {
+        const weight = 1.20
+        if (value === "lower_20k") {
+            return 100 * weight
+        }
+        if (value === "between_20k_75k") {
+            return 200 * weight
+        }
+        if (value === "bigger_75k") {
+            return 300 * weight
+        }
+    },
+    "ppe": function (value: string) {
+        const weight = 1.20
+        return value === "no" ? 100 * weight : 200 * weight
+    },
+}
+
+
+
 const useRiskProfile = () => {
 
     return {
@@ -79,6 +136,7 @@ const useRiskProfile = () => {
         formHasError,
         riskLevelProfile,
         formValidation,
+        pointsByProperty
     }
 }
 
