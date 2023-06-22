@@ -72,7 +72,7 @@ const formValidation = reactive({
 })
 
 
-const pointsByProperty = {
+const pointsByProperty: Point = {
     "countryBirth": function (value: string) {
         const weight = 1.10
         return value === "panamá" ? 100 * weight : 200 * weight

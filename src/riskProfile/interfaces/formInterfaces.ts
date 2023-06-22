@@ -24,15 +24,11 @@ export interface Input {
 }
 
 export interface Point {
-    firstName: Function;
-    secondName: Function;
-    firstSurname: Function;
-    secondSurname: Function;
-    gender: Function;
-    countryBirth: Function;
-    countryResidence: Function;
-    profession: Function;
-    age: Function;
-    incomeLevel: Function;
-    ppe: Function;
+    countryBirth: (value: string) => number;
+    countryResidence: (value: string) => number;
+    profession: (value: string) => number;
+    age: (value: string) => number | undefined;
+    incomeLevel: (value: string) => number | undefined;
+    ppe: (value: string) => number;
+    firstName?: (value: string) => number; // Agregar la propiedad 'firstName' al objeto
 }

@@ -132,7 +132,7 @@ function evaluateRiskProfile() {
           <label class="mb-2 text-sm font-medium text-gray-900" for="male">Masculino</label>
         </div>
         <div>
-          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="gender"
+          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="gender" id="gender"
             value="female" v-model="formValidation.gender.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="female">Femenino</label>
         </div>
