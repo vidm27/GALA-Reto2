@@ -18,8 +18,8 @@ function calculateRiskOfProfile() {
     if (key === "ppe") {
       isActiveHighRisk = currentValue === "no" ? false : true;
     }
-    total += pointsByProperty[castKeyFunction](currentValue)
-
+    const result = pointsByProperty[castKeyFunction](currentValue)
+    total += result
   }
   return { 'totalPoint': total, 'isActivateHighRisk': isActiveHighRisk }
 }

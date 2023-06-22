@@ -27,8 +27,7 @@ export interface Point {
     countryBirth: (value: string) => number;
     countryResidence: (value: string) => number;
     profession: (value: string) => number;
-    age: (value: string) => number | undefined;
-    incomeLevel: (value: string) => number | undefined;
+    age: (value: string) => number;
+    incomeLevel: (value: string) => number;
     ppe: (value: string) => number;
-    firstName?: (value: string) => number; // Agregar la propiedad 'firstName' al objeto
 }

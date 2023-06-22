@@ -1,8 +1,9 @@
 import { ref, reactive } from 'vue'
+import type { Point, Form } from '@/riskProfile/interfaces/formInterfaces'
 const formHasError = ref(false);
 const riskLevelProfile = ref("");
 
-const formValidation = reactive({
+const formValidation:Form = reactive<Form>({
     firstName: {
         isRequired: true,
         value: "",
@@ -71,7 +72,6 @@ const formValidation = reactive({
     }
 })
 
-
 const pointsByProperty: Point = {
     "countryBirth": function (value: string) {
         const weight = 1.10
@@ -105,9 +105,7 @@ const pointsByProperty: Point = {
         if (value === "between_25_55") {
             return 200 * weight
         }
-        if (value === "bigger_55") {
-            return 300 * weight
-        }
+        return 300 * weight
     },
     "incomeLevel": function (value: string) {
         const weight = 1.20
@@ -117,9 +115,7 @@ const pointsByProperty: Point = {
         if (value === "between_20k_75k") {
             return 200 * weight
         }
-        if (value === "bigger_75k") {
-            return 300 * weight
-        }
+        return 300 * weight
     },
     "ppe": function (value: string) {
         const weight = 1.20
