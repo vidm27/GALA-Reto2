@@ -1,171 +1,9 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import type { Form, Point, Result } from '@/riskProfile/interfaces/formInterfaces'
+import useRiskProfile from './riskProfile/composables/useRiskProfile'
 
-interface Result {
-  totalPoint: number;
-  isActivateHighRisk: boolean;
-}
+const { formValidation, riskLevelProfile, formHasError, pointsByProperty } = useRiskProfile();
 
-interface Form {
-  firstName: Input;
-  secondName: Input;
-  firstSurname: Input;
-  secondSurname: Input;
-  gender: Input;
-  countryBirth: Input;
-  countryResidence: Input;
-  profession: Input;
-  age: Input;
-  incomeLevel: Input;
-  ppe: Input;
-}
-interface Input {
-  isRequired: boolean;
-  value: string;
-  caption: string;
-  isError: boolean;
-}
-
-interface Point {
-  firstName: Function;
-  secondName: Function;
-  firstSurname: Function;
-  secondSurname: Function;
-  gender: Function;
-  countryBirth: Function;
-  countryResidence: Function;
-  profession: Function;
-  age: Function;
-  incomeLevel: Function;
-  ppe: Function;
-}
-
-const formHasError = ref(false);
-const riskLevelProfile = ref("");
-
-const pointsByProperty = {
-  "countryBirth": function (value: string) {
-    const weight = 1.10
-    return value === "panamá" ? 100 * weight : 200 * weight
-  },
-  "countryResidence": function (value: string) {
-    const weight = 1.10
-    return value === "panamá" ? 100 * weight : 200 * weight
-  },
-  "profession": function (value: string) {
-    const weight = 1.20
-    if (value === "abogado") {
-      return 100 * weight
-    }
-    if (value === "ingeniero") {
-      return 200 * weight
-    }
-    if (value === "medico") {
-      return 300 * weight
-    }
-    if (value === "contador") {
-      return 400 * weight
-    }
-    return 500 * weight
-  },
-  "age": function (value: string) {
-    const weight = 1.10
-    if (value === "lower_25") {
-      return 100 * weight
-    }
-    if (value === "between_25_55") {
-      return 200 * weight
-    }
-    if (value === "bigger_55") {
-      return 300 * weight
-    }
-  },
-  "incomeLevel": function (value: string) {
-    const weight = 1.20
-    if (value === "lower_20k") {
-      return 100 * weight
-    }
-    if (value === "between_20k_75k") {
-      return 200 * weight
-    }
-    if (value === "bigger_75k") {
-      return 300 * weight
-    }
-  },
-  "ppe": function (value: string) {
-    const weight = 1.20
-    return value === "no" ? 100 * weight : 200 * weight
-  },
-}
-
-const formValidation = reactive({
-  firstName: {
-    isRequired: true,
-    value: "",
-    caption: "Se require ingresar el primer nombre",
-    isError: false
-  },
-  secondName: {
-    isRequired: false,
-    value: "",
-    caption: "",
-    isError: false
-  },
-  firstSurname: {
-    isRequired: true,
-    value: "",
-    caption: "Se require ingresar el primer apellido",
-    isError: false
-  },
-  secondSurname: {
-    isRequired: false,
-    value: "",
-    caption: "",
-    isError: false
-  },
-  gender: {
-    isRequired: true,
-    value: "",
-    caption: "Se requiere seleccionar el genero",
-    isError: false
-  },
-  countryBirth: {
-    isRequired: true,
-    value: "",
-    caption: "Se requiere seleccionar un pais",
-    isError: false
-  },
-  countryResidence: {
-    isRequired: true,
-    value: "",
-    caption: "Se requiere seleccionar un pais",
-    isError: false
-  },
-  profession: {
-    isRequired: true,
-    value: "",
-    caption: "Se requiere escoger una profession",
-    isError: false
-  },
-  age: {
-    isRequired: true,
-    value: "",
-    caption: "Se require seleccionar un rango de edad",
-    isError: false
-  },
-  incomeLevel: {
-    isRequired: true,
-    value: "",
-    caption: "Se require seleccionar un rango de ingresos",
-    isError: false
-  },
-  ppe: {
-    isRequired: true,
-    value: "",
-    caption: "se require selecionar una opcion",
-    isError: false
-  }
-})
 
 function calculateRiskOfProfile() {
   const inputsIgnore = ['firstName', 'secondName', 'firstSurname', 'secondSurname', 'gender'];
@@ -259,21 +97,21 @@ function evaluateRiskProfile() {
     <form class="grid gap-2 md:grid-cols-1 shadow-lg px-4 py-3 rounded-md">
       <div>
         <label class="block mb-2 text-sm font-medium text-gray-900">Primer nombre</label>
-        <input type="text" name="firstName" id="firstName" v-model="formValidation.firstName.value"
+        <input type="text" name="firstName" v-model="formValidation.firstName.value"
           class="bg-gray-50 border border-gray-300 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-1.5 w-full">
         <span v-if="formValidation.firstName.isError" class="text-sm font-bold text-red-700">{{
           formValidation.firstName.caption }}</span>
       </div>
       <div>
         <label class="block mb-2 text-sm font-medium text-gray-900">Segundo nombre</label>
-        <input type="text" name="middleName" id="middleName" v-model="formValidation.secondName.value"
+        <input type="text" name="middleName"  v-model="formValidation.secondName.value"
           class="bg-gray-50 border border-gray-300 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-1.5 w-full">
         <span v-if="formValidation.secondName.isError" class="text-sm font-bold text-red-700">{{
           formValidation.secondName.caption }}</span>
       </div>
       <div>
         <label class="block mb-2 text-sm font-medium text-gray-900" for="firstSurname">Primer Apellido</label>
-        <input type="text" name="firstSurname" id="firstSurname" v-model="formValidation.firstSurname.value"
+        <input type="text" name="firstSurname"  v-model="formValidation.firstSurname.value"
           class="bg-gray-50 border border-gray-300 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-1.5 w-full">
         <span v-if="formValidation.firstSurname.isError" class="text-sm font-bold text-red-700">{{
           formValidation.firstSurname.caption }}</span>
@@ -281,7 +119,7 @@ function evaluateRiskProfile() {
       </div>
       <div>
         <label class="block mb-2 text-sm font-medium text-gray-900" for="secondSurname">Segundo Apellido</label>
-        <input type="text" name="secondSurname" id="secondSurname" v-model="formValidation.secondSurname.value"
+        <input type="text" name="secondSurname" v-model="formValidation.secondSurname.value"
           class="bg-gray-50 border border-gray-300 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-1.5 w-full">
         <span v-if="formValidation.secondSurname.isError" class="text-sm font-bold text-red-700">{{
           formValidation.secondSurname.caption }}</span>
@@ -289,12 +127,12 @@ function evaluateRiskProfile() {
       <div>
         <label class="mb-2 text-sm font-medium text-gray-900" for="gender">Genero</label>
         <div>
-          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="gender" id="gender"
+          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="gender"
             value="male" v-model="formValidation.gender.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="male">Masculino</label>
         </div>
         <div>
-          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="gender" id="gender"
+          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="gender"
             value="female" v-model="formValidation.gender.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="female">Femenino</label>
         </div>
@@ -306,7 +144,7 @@ function evaluateRiskProfile() {
         <label class="mb-2 text-sm font-medium text-gray-900" for="countryBirth">País de Nacimiento </label>
         <select
           class="bg-gray-50 border border-gray-300 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-1.5 w-full"
-          name="countryBirth" id="countryBirth" v-model="formValidation.countryBirth.value">
+          name="countryBirth" v-model="formValidation.countryBirth.value">
           <option value="" selected disabled>Selecciona un pais</option>
           <option value="panamá">Panamá</option>
           <option value="otro">Otro</option>
@@ -319,7 +157,7 @@ function evaluateRiskProfile() {
         <label class="mb-2 text-sm font-medium text-gray-900" for="countryResidence">País de residencia </label>
         <select
           class="bg-gray-50 border border-gray-300 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-1.5 w-full"
-          name="countryResidence" id="countryResidence" v-model="formValidation.countryResidence.value">
+          name="countryResidence"  v-model="formValidation.countryResidence.value">
           <option value="" selected disabled>Selecciona un pais</option>
           <option value="panamá">Panamá</option>
           <option value="otro">Otro</option>
@@ -331,27 +169,27 @@ function evaluateRiskProfile() {
       <div>
         <label class="mb-2 text-sm font-medium text-gray-900" for="profession">Profesión</label>
         <div>
-          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="profession" id="profession"
+          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="profession"
             value="abogado" v-model="formValidation.profession.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="lawyer">Abogado</label>
         </div>
         <div>
-          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="profession" id="profession"
+          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="profession"
             value="ingeniero" v-model="formValidation.profession.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="ing">Ingeniero</label>
         </div>
         <div>
-          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="profession" id="profession"
+          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="profession"
             value="medico" v-model="formValidation.profession.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="ing">Médico</label>
         </div>
         <div>
-          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="profession" id="profession"
+          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="profession"
             value="contador" v-model="formValidation.profession.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="ing">Contador</label>
         </div>
         <div>
-          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="profession" id="profession"
+          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="profession"
             value="otro" v-model="formValidation.profession.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="otherProfession">Otro</label>
         </div>
@@ -362,18 +200,18 @@ function evaluateRiskProfile() {
       <div>
         <label class="mb-2 text-sm font-medium text-gray-900" for="age">Edad</label>
         <div>
-          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="age" id="age"
-            value="lower_25" v-model="formValidation.age.value">
+          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="age" value="lower_25"
+            v-model="formValidation.age.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="lower_25">Menos 25</label>
         </div>
         <div>
-          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="age" id="age"
-            value="between_25_55" v-model="formValidation.age.value">
+          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="age" value="between_25_55"
+            v-model="formValidation.age.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="between_25_55">Entre 25 y 55</label>
         </div>
         <div>
-          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="age" id="age"
-            value="bigger_55" v-model="formValidation.age.value">
+          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="age" value="bigger_55"
+            v-model="formValidation.age.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="bigger_55">Mayor a 55</label>
         </div>
         <span v-if="formValidation.age.isError" class="text-sm font-bold text-red-700">{{ formValidation.age.caption
@@ -384,17 +222,17 @@ function evaluateRiskProfile() {
         <label class="mb-2 text-sm font-medium text-gray-900" for="incomeLevel">Nivel de ingreso</label>
         <div>
           <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="incomeLevel"
-            id="incomeLevel" value="lower_20k" v-model="formValidation.incomeLevel.value">
+            value="lower_20k" v-model="formValidation.incomeLevel.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="lower20k">Menos 20K</label>
         </div>
         <div>
           <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="incomeLevel"
-            id="incomeLevel" value="between_20k_75k" v-model="formValidation.incomeLevel.value">
+            value="between_20k_75k" v-model="formValidation.incomeLevel.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="between_20k_75k">Entre 20k y 75k</label>
         </div>
         <div>
           <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="incomeLevel"
-            id="incomeLevel" value="bigger_75k" v-model="formValidation.incomeLevel.value">
+            value="bigger_75k" v-model="formValidation.incomeLevel.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="bigger_75k">Mayor 75K</label>
         </div>
         <span v-if="formValidation.incomeLevel.isError" class="text-sm font-bold text-red-700">{{
@@ -404,12 +242,12 @@ function evaluateRiskProfile() {
       <div>
         <label class="mb-2 text-sm font-medium text-gray-900" for="ppe">¿Eres una persona políticamente expuestas?</label>
         <div>
-          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="ppe" id="" value="si"
+          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="ppe" value="si"
             v-model="formValidation.ppe.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="si">Sí</label>
         </div>
         <div>
-          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="ppe" id="" value="no"
+          <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" type="radio" name="ppe" value="no"
             v-model="formValidation.ppe.value">
           <label class="mb-2 text-sm font-medium text-gray-900" for="no">No</label>
         </div>
@@ -421,7 +259,7 @@ function evaluateRiskProfile() {
           <span class="text-sm font-bold text-red-700">La evaluacion no se puede realizar ya que hay errores en el
             formulario</span>
         </div>
-        <button type="button" id="btnRiskProfile" @click="evaluateRiskProfile"
+        <button type="button" @click="evaluateRiskProfile"
           class="text-white bg-green-700 px-4 py-2 rounded-md outline-none hover:bg-green-900 w-full">Evaluar perfil de
           riesgo</button>
       </div>
@@ -460,4 +298,5 @@ dialog.hide-dialog {
 
 dialog::backdrop {
   background: rgba(231, 231, 231, 0.25);
-}</style>
+}
+</style>
