@@ -41,6 +41,7 @@ interface Point {
 }
 
 const formHasError = ref(false);
+const riskLevelProfile = ref("");
 
 const pointsByProperty = {
   "countryBirth": function (value: string) {
@@ -117,7 +118,7 @@ const formValidation = reactive({
     isError: false
   },
   secondSurname: {
-    isRequired: true,
+    isRequired: false,
     value: "",
     caption: "",
     isError: false
@@ -185,6 +186,26 @@ function calculateRiskOfProfile() {
   return { 'totalPoint': total, 'isActivateHighRisk': isActiveHighRisk }
 }
 
+function hidePreviewDialog(dialog: HTMLDialogElement) {
+  dialog.addEventListener("click", (event) => {
+    const rect = dialog.getBoundingClientRect();
+    const isClickHeightBackdrop = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height)
+    const isClickWidthBackdrop = (rect.left <= event.clientX && event.clientX <= rect.left + rect.width)
+    const isClickBackdrop = isClickHeightBackdrop && isClickWidthBackdrop
+    if (!isClickBackdrop) {
+      dialog.close()
+    }
+  })
+}
+
+function showPreviewDialog() {
+  const dialog: HTMLDialogElement = document.getElementById("preview") as HTMLDialogElement;
+  dialog.classList.add("active-dialog");
+  dialog.showModal()
+  hidePreviewDialog(dialog);
+}
+
+
 function checkLevelRisk(result: Result) {
   if (result.isActivateHighRisk === true) {
     return "Alto"
@@ -198,6 +219,7 @@ function checkLevelRisk(result: Result) {
   if (result.totalPoint <= 1200) {
     return "Bajo"
   }
+  return ""
 }
 
 function validateInputOfForm() {
@@ -226,6 +248,8 @@ function evaluateRiskProfile() {
   const result = calculateRiskOfProfile();
   console.log(result)
   const risk = checkLevelRisk(result);
+  riskLevelProfile.value = risk;
+  showPreviewDialog()
   console.log(`El nivel de riesgo de este cliente es: ${risk}`);
 }
 </script>
@@ -393,15 +417,47 @@ function evaluateRiskProfile() {
         }}</span>
       </div>
       <div>
-        <div  v-if="formHasError === true" class="p-2.5 bg-gray-50 rounded-md mb-2 border">
-          <span class="text-sm font-bold text-red-700">La evaluacion no se puede realizar ya que hay errores en el formulario</span>
+        <div v-if="formHasError === true" class="p-2.5 bg-gray-50 rounded-md mb-2 border">
+          <span class="text-sm font-bold text-red-700">La evaluacion no se puede realizar ya que hay errores en el
+            formulario</span>
         </div>
         <button type="button" id="btnRiskProfile" @click="evaluateRiskProfile"
           class="text-white bg-green-700 px-4 py-2 rounded-md outline-none hover:bg-green-900 w-full">Evaluar perfil de
           riesgo</button>
       </div>
     </form>
+    <dialog id="preview" class="rounded-md border-2 text-center w-6/12">
+      <h1 class="text-3xl font-bold bg-gray-50 rounded-md mb-3 px-1 py-1">Resultado de Evalucion</h1>
+      <section class="text-left flex flex-col gap-4  bg-gray-50 py-2 px-3.5 rounded-md mb-4">
+        <p>El perfil de este usuario es {{ riskLevelProfile }}</p>
+      </section>
+    </dialog>
   </section>
 </template>
 
-<style scoped></style>
+<style scoped>
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.25);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+dialog.active-dialog {
+  animation: bounce-in 0.5s;
+}
+
+dialog.hide-dialog {
+  animation: bounce-in 0.5s reverse;
+}
+
+dialog::backdrop {
+  background: rgba(231, 231, 231, 0.25);
+}</style>
